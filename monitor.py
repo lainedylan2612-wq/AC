@@ -516,13 +516,13 @@ def mode_monitor():
                 f"{len(all_new_listings)} nouvelle(s) annonce(s) sur lacartedescolocs.fr",
             )
 
-        if len(all_new_listings) == 1:
-            click_url = listing_url(all_new_listings[0])
-            ntfy_body = all_new_listings[0].get('main_title', 'Nouvelle annonce')
-        else:
-            click_url = ref_url
-            ntfy_body = f"{len(all_new_listings)} nouvelles annonces"
-        send_ntfy(ntfy_topic, "Colocalert", ntfy_body, click_url)
+        for l in all_new_listings:
+            click_url = listing_url(l)
+            rent      = f"{l['cost_total_rent']} €/mois" if l.get("cost_total_rent") else ""
+            ntfy_body = l.get("main_title") or l.get("lodging_type_string") or "Nouvelle annonce"
+            if rent:
+                ntfy_body += f" — {rent}"
+            send_ntfy(ntfy_topic, "Colocalert", ntfy_body, click_url)
 
     save_seen(seen | all_current_ids)
 
