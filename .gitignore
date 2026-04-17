@@ -1,5 +1,7 @@
 # Données locales (sensibles ou générées)
-data/
+data/config.json
+data/alert_history.json
+data/monitor.log
 
 # Instructions Claude (usage local uniquement)
 CLAUDE.md
