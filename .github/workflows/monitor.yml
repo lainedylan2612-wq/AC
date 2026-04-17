@@ -24,13 +24,6 @@ jobs:
       - name: Installer les dépendances
         run: pip install curl_cffi beautifulsoup4
 
-      - name: Écrire la configuration
-        env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
-        run: |
-          mkdir -p data
-          echo "$CONFIG_JSON" > data/config.json
-
       - name: Lancer la surveillance
         run: python monitor.py
 

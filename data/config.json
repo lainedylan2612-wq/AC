@@ -1,0 +1,31 @@
+{
+  "urls": [
+    "https://www.lacartedescolocs.fr/logements/fr/ile-de-france/paris",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/montreuil",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/les-lilas",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/le-pre-saint-gervais",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/pantin",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/aubervilliers",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/saint-denis",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/ivry-sur-seine",
+    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/le-kremlin-bicetre"
+  ],
+  "extra_filters": {
+    "rent_max": 700,
+    "date_min": -7,
+    "listing_type_rental": false,
+    "listing_type_homestay": false,
+    "listing_type_sublet": false,
+    "listing_type_student_residence": false,
+    "listing_type_student_room": false,
+    "lodging_type_building": false,
+    "lodging_type_chalet": false,
+    "lodging_type_cabin": false,
+    "lodging_type_farm": false,
+    "lodging_type_castle": false,
+    "lodging_type_houseboat": false,
+    "housemates_h0": false
+  },
+  "desktop_notifications": false,
+  "ntfy_topic": "colocalert-117"
+}

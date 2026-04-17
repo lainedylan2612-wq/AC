@@ -1,5 +1,4 @@
 # Données locales (sensibles ou générées)
-data/config.json
 data/alert_history.json
 data/monitor.log
 
