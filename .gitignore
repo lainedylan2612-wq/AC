@@ -1,0 +1,12 @@
+# Données locales (sensibles ou générées)
+data/
+
+# Instructions Claude (usage local uniquement)
+CLAUDE.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
