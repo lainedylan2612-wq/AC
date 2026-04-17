@@ -949,7 +949,26 @@ class ColocApp(tk.Tk):
             json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
         self._log("Configuration et filtres sauvegardés.", "success")
         self._set_status("Sauvegardé")
+        threading.Thread(target=self._git_push_config, daemon=True).start()
         return True
+
+    def _git_push_config(self):
+        try:
+            cmds = [
+                ["git", "add", str(CONFIG_FILE)],
+                ["git", "commit", "-m", "config: mise à jour filtres"],
+                ["git", "push"],
+            ]
+            for cmd in cmds:
+                r = subprocess.run(cmd, cwd=str(BASE_DIR), capture_output=True, text=True)
+                if r.returncode != 0:
+                    if "nothing to commit" in r.stdout + r.stderr:
+                        break
+                    self.after(0, self._log, f"[git] {r.stderr.strip()}", "error")
+                    return
+            self.after(0, self._log, "Configuration synchronisée avec GitHub.", "success")
+        except Exception as e:
+            self.after(0, self._log, f"[git] Erreur : {e}", "error")
 
     def _test_ntfy(self):
         import urllib.request
