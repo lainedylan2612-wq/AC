@@ -474,7 +474,14 @@ def mode_monitor():
     all_new_listings: list = []
     all_current_ids:  set  = set()
 
+    url_overrides = config.get("url_overrides", {})
+
     for url in urls:
+        url_filters = {**extra_filters}
+        for key, overrides in url_overrides.items():
+            if key in url:
+                url_filters.update(overrides)
+
         print(f"[{ts}] Vérification : {url}")
         try:
             ctx = fetch_with_retry(get_page_context, url, label="chargement page")
@@ -483,7 +490,7 @@ def mode_monitor():
             continue
 
         try:
-            listings, total = fetch_all_listings(ctx, extra_filters)
+            listings, total = fetch_all_listings(ctx, url_filters)
         except Exception as e:
             print(f"  [ERREUR] API inaccessible : {e}")
             continue
