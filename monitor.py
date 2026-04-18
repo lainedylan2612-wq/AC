@@ -519,13 +519,12 @@ def mode_monitor():
         for l in all_new_listings:
             click_url = listing_url(l)
             rent      = f"{l['cost_total_rent']} €/mois" if l.get("cost_total_rent") else ""
-            city      = l.get("address_city", "")
-            ntfy_body = l.get("main_title") or l.get("lodging_type_string") or "Nouvelle annonce"
-            if city:
-                ntfy_body += f" — {city}"
+            city       = l.get("address_city", "")
+            ntfy_title = f"Colocalert — {city}" if city else "Colocalert"
+            ntfy_body  = l.get("main_title") or l.get("lodging_type_string") or "Nouvelle annonce"
             if rent:
                 ntfy_body += f" — {rent}"
-            send_ntfy(ntfy_topic, "Colocalert", ntfy_body, click_url)
+            send_ntfy(ntfy_topic, ntfy_title, ntfy_body, click_url)
 
     save_seen(seen | all_current_ids)
 
