@@ -253,9 +253,8 @@ def windows_toast(title: str, message: str):
 def send_ntfy(topic: str, title: str, message: str, click_url: str = ""):
     if not topic or not topic.strip():
         return
-    import urllib.parse
     headers = {
-        "Title":    urllib.parse.quote(title),
+        "Title":    title,
         "Priority": "high",
         "Tags":     "house",
     }
@@ -263,13 +262,13 @@ def send_ntfy(topic: str, title: str, message: str, click_url: str = ""):
         headers["Click"]   = click_url
         headers["Actions"] = f"view, Voir l'annonce, {click_url}"
     try:
-        req = urllib.request.Request(
+        requests.post(
             f"https://ntfy.sh/{topic.strip()}",
-            data=message.encode("utf-8"),
+            content=message.encode("utf-8"),
             headers=headers,
-            method="POST",
+            impersonate="chrome",
+            timeout=10,
         )
-        urllib.request.urlopen(req, timeout=10)
     except Exception as e:
         print(f"  [ntfy] Erreur : {e}")
 
