@@ -8,8 +8,11 @@
     "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/aubervilliers",
     "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/le-kremlin-bicetre"
   ],
+  "url_overrides": {
+    "paris": {"rent_max": 650}
+  },
   "extra_filters": {
-    "rent_max": 500,
+    "rent_max": 550,
     "date_min": -7,
     "listing_type_rental": false,
     "listing_type_homestay": false,
