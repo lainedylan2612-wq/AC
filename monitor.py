@@ -250,9 +250,10 @@ def windows_toast(title: str, message: str):
 
 # ── Notification push téléphone (ntfy.sh) ────────────────────────────────────
 
-def send_ntfy(topic: str, title: str, message: str, click_url: str = ""):
+def send_ntfy(topic: str, title: str, message: str, click_url: str = "") -> bool:
+    """Retourne True si la notification a été envoyée, False sinon."""
     if not topic or not topic.strip():
-        return
+        return True
     headers = {
         "Title":    title,
         "Priority": "high",
@@ -269,8 +270,10 @@ def send_ntfy(topic: str, title: str, message: str, click_url: str = ""):
             impersonate="chrome",
             timeout=10,
         )
+        return True
     except Exception as e:
         print(f"  [ntfy] Erreur : {e}")
+        return False
 
 
 # ── URL annonce ───────────────────────────────────────────────────────────────
@@ -472,6 +475,7 @@ def mode_monitor():
     seen             = load_seen()
     all_new_listings: list = []
     all_current_ids:  set  = set()
+    notified_ids:     set  = set()   # dedup inter-URLs
 
     url_overrides = config.get("url_overrides", {})
 
@@ -513,7 +517,7 @@ def mode_monitor():
 
         current_ids   = {str(l["id"]) for l in listings}
         all_current_ids |= current_ids
-        new_listings  = [l for l in listings if str(l["id"]) not in seen]
+        new_listings  = [l for l in listings if str(l["id"]) not in seen and str(l["id"]) not in notified_ids]
 
         if new_listings:
             print(f"  {len(new_listings)} nouvelle(s) annonce(s) détectée(s) !")
@@ -521,6 +525,7 @@ def mode_monitor():
                 rent = f"{l['cost_total_rent']} EUR/mois" if l.get("cost_total_rent") else "—"
                 print(f"    - {l.get('main_title', '?')} | {rent} | {listing_url(l)}")
             all_new_listings.extend(new_listings)
+            notified_ids |= {str(l["id"]) for l in new_listings}
         else:
             print(f"  Aucune nouvelle annonce ({len(listings)}/{total} en ligne).")
 
@@ -535,6 +540,7 @@ def mode_monitor():
                 f"{len(all_new_listings)} nouvelle(s) annonce(s) sur lacartedescolocs.fr",
             )
 
+        successfully_sent: set = set()
         for l in all_new_listings:
             click_url = listing_url(l)
             rent      = f"{l['cost_total_rent']} €/mois" if l.get("cost_total_rent") else ""
@@ -542,9 +548,16 @@ def mode_monitor():
             ntfy_title = f"Colocalert - {city}" if city else "Colocalert"
             ntfy_body  = l.get("main_title") or l.get("lodging_type_string") or "Nouvelle annonce"
             if rent:
-                ntfy_body += f" — {rent}"
-            send_ntfy(ntfy_topic, ntfy_title, ntfy_body, click_url)
+                ntfy_body += f" - {rent}"
+            ok = send_ntfy(ntfy_topic, ntfy_title, ntfy_body, click_url)
+            if ok:
+                successfully_sent.add(str(l["id"]))
+            else:
+                print(f"  [ntfy] Annonce {l['id']} non marquée comme vue (échec envoi).")
             time.sleep(1)
+
+        # Ne marquer comme vues que les annonces dont la notif est partie
+        all_current_ids -= {str(l["id"]) for l in all_new_listings if str(l["id"]) not in successfully_sent}
 
     save_seen(seen | all_current_ids)
 
