@@ -481,6 +481,7 @@ def mode_monitor():
     notified_ids:     set  = set()   # dedup inter-URLs
 
     url_overrides = config.get("url_overrides", {})
+    failed_urls: list = []
 
     for url in urls:
         url_filters = {**extra_filters}
@@ -493,12 +494,14 @@ def mode_monitor():
             ctx = fetch_with_retry(get_page_context, url, label="chargement page")
         except Exception as e:
             print(f"  [ERREUR] Chargement impossible : {e}")
+            failed_urls.append(url)
             continue
 
         try:
             listings, total = fetch_all_listings(ctx, url_filters)
         except Exception as e:
             print(f"  [ERREUR] API inaccessible : {e}")
+            failed_urls.append(url)
             continue
 
         if not listings:
@@ -561,6 +564,15 @@ def mode_monitor():
         all_current_ids -= {str(l["id"]) for l in all_new_listings if str(l["id"]) not in successfully_sent}
 
     save_seen(seen | all_current_ids)
+
+    if failed_urls:
+        if len(failed_urls) == len(urls):
+            send_ntfy(ntfy_topic, "Colocalert - ERREUR",
+                      f"Toutes les URLs ont echoue ({len(failed_urls)}/{len(urls)}). Verifiez les logs GitHub Actions.")
+        else:
+            cities = ", ".join(u.rstrip("/").split("/")[-1] for u in failed_urls)
+            send_ntfy(ntfy_topic, "Colocalert - avertissement",
+                      f"Echec sur {len(failed_urls)} URL(s) : {cities}")
 
 
 # ── Point d'entrée ────────────────────────────────────────────────────────────
