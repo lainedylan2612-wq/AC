@@ -498,6 +498,19 @@ def mode_monitor():
             print("  Aucune annonce reçue (API vide).")
             continue
 
+        # Filtre post-fetch par ville réelle (corrige les débordements géographiques)
+        def city_rent_ok(l):
+            city = l.get("address_city", "").lower()
+            rent = l.get("cost_total_rent") or 0
+            city_max = extra_filters.get("rent_max", 99999)
+            for key, overrides in url_overrides.items():
+                if key in city:
+                    city_max = overrides.get("rent_max", city_max)
+                    break
+            return rent <= city_max
+
+        listings = [l for l in listings if city_rent_ok(l)]
+
         current_ids   = {str(l["id"]) for l in listings}
         all_current_ids |= current_ids
         new_listings  = [l for l in listings if str(l["id"]) not in seen]
