@@ -264,7 +264,7 @@ def send_ntfy(topic: str, title: str, message: str, click_url: str = ""):
     try:
         requests.post(
             f"https://ntfy.sh/{topic.strip()}",
-            content=message.encode("utf-8"),
+            data=message.encode("utf-8"),
             headers=headers,
             impersonate="chrome",
             timeout=10,
@@ -526,7 +526,7 @@ def mode_monitor():
             click_url = listing_url(l)
             rent      = f"{l['cost_total_rent']} €/mois" if l.get("cost_total_rent") else ""
             city       = l.get("address_city", "")
-            ntfy_title = f"Colocalert — {city}" if city else "Colocalert"
+            ntfy_title = f"Colocalert - {city}" if city else "Colocalert"
             ntfy_body  = l.get("main_title") or l.get("lodging_type_string") or "Nouvelle annonce"
             if rent:
                 ntfy_body += f" — {rent}"
