@@ -263,13 +263,16 @@ def send_ntfy(topic: str, title: str, message: str, click_url: str = "") -> bool
         headers["Click"]   = click_url
         headers["Actions"] = f"view, Voir l'annonce, {click_url}"
     try:
-        requests.post(
+        resp = requests.post(
             f"https://ntfy.sh/{topic.strip()}",
             data=message.encode("utf-8"),
             headers=headers,
             impersonate="chrome",
             timeout=10,
         )
+        if resp.status_code >= 400:
+            print(f"  [ntfy] Erreur HTTP {resp.status_code}")
+            return False
         return True
     except Exception as e:
         print(f"  [ntfy] Erreur : {e}")
@@ -530,8 +533,6 @@ def mode_monitor():
             print(f"  Aucune nouvelle annonce ({len(listings)}/{total} en ligne).")
 
     if all_new_listings:
-        ref_url = urls[0] if urls else DEFAULT_URL
-
         save_history(all_new_listings)
 
         if do_toast:
