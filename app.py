@@ -939,12 +939,14 @@ class ColocApp(tk.Tk):
             self._log(f"Erreur lecture config : {e}", "error")
 
     def _save_all(self):
-        cfg = {
-            "urls":                  self._get_urls(),
-            "extra_filters":         self._collect_filters(),
-            "desktop_notifications": self.v_notif.get(),
-            "ntfy_topic":            self.v_ntfy.get().strip(),
-        }
+        try:
+            cfg = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            cfg = {}
+        cfg["urls"]                  = self._get_urls()
+        cfg["extra_filters"]         = self._collect_filters()
+        cfg["desktop_notifications"] = self.v_notif.get()
+        cfg["ntfy_topic"]            = self.v_ntfy.get().strip()
         CONFIG_FILE.write_text(
             json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
         self._log("Configuration et filtres sauvegardés.", "success")
