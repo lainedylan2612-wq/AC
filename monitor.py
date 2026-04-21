@@ -544,6 +544,7 @@ def mode_monitor():
             if rent:
                 ntfy_body += f" — {rent}"
             send_ntfy(ntfy_topic, ntfy_title, ntfy_body, click_url)
+            time.sleep(1)
 
     save_seen(seen | all_current_ids)
 
