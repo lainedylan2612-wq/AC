@@ -12,6 +12,7 @@ import json
 import io
 import time
 import subprocess
+import unicodedata
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -250,12 +251,17 @@ def windows_toast(title: str, message: str):
 
 # ── Notification push téléphone (ntfy.sh) ────────────────────────────────────
 
+def _ascii_header(s: str) -> str:
+    """Supprime les accents pour rester dans le charset ASCII des headers HTTP."""
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+
+
 def send_ntfy(topic: str, title: str, message: str, click_url: str = "") -> bool:
     """Retourne True si la notification a été envoyée, False sinon."""
     if not topic or not topic.strip():
         return True
     headers = {
-        "Title":    title,
+        "Title":    _ascii_header(title),
         "Priority": "high",
         "Tags":     "house",
     }
