@@ -1,12 +1,6 @@
 {
   "urls": [
-    "https://www.lacartedescolocs.fr/logements/fr/ile-de-france/paris",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/montreuil",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/les-lilas",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/le-pre-saint-gervais",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/pantin",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/aubervilliers",
-    "https://www.lacartedescolocs.fr/colocations/fr/ile-de-france/le-kremlin-bicetre"
+    "https://www.lacartedescolocs.fr/logements/fr/ile-de-france/paris"
   ],
   "url_overrides": {
     "paris": {"rent_max": 650}
