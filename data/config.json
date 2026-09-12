@@ -3,10 +3,10 @@
     "https://www.lacartedescolocs.fr/logements/fr/ile-de-france/paris"
   ],
   "url_overrides": {
-    "paris": {"rent_max": 650}
+    "paris": {"rent_max": 750}
   },
   "extra_filters": {
-    "rent_max": 550,
+    "rent_max": 750,
     "date_min": -7,
     "listing_type_rental": false,
     "listing_type_homestay": false,
